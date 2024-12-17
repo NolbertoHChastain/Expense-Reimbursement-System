@@ -1,0 +1,13 @@
+package app.ers.server;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class EmployeeReimbursementSystemApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(EmployeeReimbursementSystemApplication.class, args);
+	}
+
+}
