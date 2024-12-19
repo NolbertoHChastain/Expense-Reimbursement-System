@@ -1,12 +1,18 @@
 package app.ers.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import java.util.List;
+
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity // annotation makes a DB table based on class
 @Table(name="User") // annotation lets us specify table properties (like table name)
@@ -28,9 +34,17 @@ public class User {
     @Column(nullable = false)
     private String role = "employee"; // default role is employee
 
-    /**
-     * boiler plate - no args, all args, getter/setter, toString
+    /*
+    One User can have Many Reimbursements mapped by user field and ALL
+    changes to Reimbursement records will affect dependent User records
+    - fetch dependency at runtime
      */
+    @JsonIgnore // ignore field when converting User to JSON
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Reimbursement> reimbursements;
+
+    // boiler plate - no args, all args, getter/setter, toString
+
     public User() {
     }
 
@@ -73,4 +87,14 @@ public class User {
         this.role = role;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", reimbursements=" + reimbursements +
+                '}';
+    }
 }
