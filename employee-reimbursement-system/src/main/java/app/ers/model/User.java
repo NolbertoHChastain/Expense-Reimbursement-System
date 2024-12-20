@@ -25,6 +25,13 @@ public class User {
 
     // @Column - NOT necessary UNLESS setting DB Table column name or constraints
     // nullable : false - constraint ensures column MUST have value
+
+    @Column(nullable = false)
+    private String firstname;
+
+    @Column(nullable = false)
+    private String lastname;
+
     @Column(nullable = false)
     private String username;
 
@@ -48,11 +55,30 @@ public class User {
     public User() {
     }
 
-    public User(int userId, String username, String password, String role) {
+    public User(int userId, String firstname, String lastname,
+                String username, String password, String role) {
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public int getUserId() {
@@ -87,10 +113,20 @@ public class User {
         this.role = role;
     }
 
+    public List<Reimbursement> getReimbursements() {
+        return reimbursements;
+    }
+
+    public void setReimbursements(List<Reimbursement> reimbursements) {
+        this.reimbursements = reimbursements;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +
