@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 @RestControllerAdvice
 public class ExceptionAndErrorController {
 
-    @ExceptionHandler(DuplicateUsernameException.class)
+    @ExceptionHandler(RepositoryException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String handleDuplicateUsernames(DuplicateUsernameException e) {
+    public String handleDuplicateUsernames(RepositoryException e) {
         return e.getMessage();
     }
 

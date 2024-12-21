@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import app.ers.model.DTO.IncomingUserDTO;
 import app.ers.model.User;
-import app.ers.exception.DuplicateUsernameException;
+import app.ers.exception.RepositoryException;
 import app.ers.exception.InvalidRegistrationException;
 import app.ers.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ public class UserService {
         this.userRepository = userRepository;
     } // constructor injection
 
-    // username, password, role
     public User register(IncomingUserDTO userDTO) {
         // 1. convert userDTO to  User model class
         User user = new User(0, userDTO.getFirstname(), userDTO.getLastname(),
@@ -32,7 +31,7 @@ public class UserService {
             Optional<User> existingUser = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
             if (!existingUser.isPresent()) {
                 return userRepository.save(user);
-            } else throw new DuplicateUsernameException("An account with that username already exists");
+            } else throw new RepositoryException("An account with that username already exists");
         } else throw new InvalidRegistrationException("Invalid account details");
     }
 
