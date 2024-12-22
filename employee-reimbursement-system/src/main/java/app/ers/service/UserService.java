@@ -8,6 +8,7 @@ import app.ers.model.DTO.IncomingUserDTO;
 import app.ers.model.User;
 import app.ers.exception.RepositoryException;
 import app.ers.exception.InvalidRegistrationException;
+import app.ers.repository.ReimbursementRepository;
 import app.ers.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,12 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ReimbursementRepository reimbursementRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ReimbursementRepository reimbursementRepository) {
         this.userRepository = userRepository;
+        this.reimbursementRepository = reimbursementRepository;
     } // constructor injection
 
     public User register(IncomingUserDTO userDTO) {
@@ -52,6 +55,22 @@ public class UserService {
                 return users;
             } throw new UnauthorizedException("not authorized to perform this action");
         } throw new RepositoryException("invalid user details");
+    }
+
+    public int deleteUserById(int userId, int managerId) {
+        // 1. ensure manager exist
+        Optional<User> user = userRepository.findById(userId);
+        Optional<User> manager = userRepository.findById(managerId);
+        if (manager.isPresent()) {
+            // 2. ensure managerId has 'manager' role
+            if (manager.get().getRole().equals("manager")) {
+                // 3. check user is not already deleted
+                if (user.isPresent()) {
+                    userRepository.deleteById(userId);
+                    return 1;
+                } else return 0;
+            } throw new UnauthorizedException("not authorized to perform this action");
+        } throw new RepositoryException("invalid manager details");
     }
 
     private boolean validFields(User user) {
