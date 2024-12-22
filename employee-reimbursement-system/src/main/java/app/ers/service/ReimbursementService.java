@@ -3,6 +3,7 @@ package app.ers.service;
 import java.util.List;
 import java.util.Optional;
 
+import app.ers.exception.UnauthorizedException;
 import app.ers.model.DTO.IncomingReimbursementDTO;
 import app.ers.model.DTO.OutgoingReimbursementDTO;
 import app.ers.model.User;
@@ -11,6 +12,7 @@ import app.ers.exception.RepositoryException;
 import app.ers.exception.InvalidRegistrationException;
 import app.ers.repository.UserRepository;
 import app.ers.repository.ReimbursementRepository;
+import app.ers.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,6 +104,31 @@ public class ReimbursementService {
             } // else : manager
         } else throw new RepositoryException("invalid account details");
 
+    }
+
+    public Reimbursement updateReimbursementStatus(int reimbId, IncomingReimbursementDTO reimbursementDTO) {
+        // 1. ensure reimbursement, user, and status for update exists
+        Optional<User> user = userRepository.findById(reimbursementDTO.getUserId());
+        Optional<Reimbursement> reimbursement = reimbursementRepository.findById(reimbId);
+        if (user.isPresent() && reimbursement.isPresent()) { // need to add checks for status values
+            // 2. ensure role is manager to allow
+            if (user.get().getRole().equals("manager")) {
+                reimbursement.get().setStatus(reimbursementDTO.getStatus());
+                Reimbursement updatedReimbursement = reimbursementRepository.save(reimbursement.get());
+                updatedReimbursement.setUser(null);
+                return updatedReimbursement;
+            } else throw new UnauthorizedException("not authorized to perform this action");
+        } else throw new RepositoryException("invalid User or Reimbursement details");
+    }
+
+    private Reimbursement setUpdates(IncomingReimbursementDTO reimbursementDTO, Reimbursement existingReimbursement) {
+        if (reimbursementDTO.getAmount() != 0) {
+            existingReimbursement.setAmount(reimbursementDTO.getAmount());
+        } // if : amount available
+        else if (reimbursementDTO.getDescription() != null) {
+            existingReimbursement.setDescription(reimbursementDTO.getDescription());
+        } // else if : description available
+        return existingReimbursement;
     }
 
     private boolean validFields(Reimbursement reimbursement) {

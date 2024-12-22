@@ -23,4 +23,7 @@ public class ExceptionAndErrorController {
         return e.getMessage();
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleUnauthorizedRequest(UnauthorizedException e) { return e.getMessage(); }
 }

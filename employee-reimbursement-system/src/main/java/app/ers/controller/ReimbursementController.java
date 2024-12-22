@@ -46,5 +46,13 @@ public class ReimbursementController {
         return ResponseEntity.ok().body(reimbursementService.getAllReimbursementsByStatus(status, userId));
     } // jwt/session : will have userId - remove later
 
-    //@PatchMapping("/{reimbId}/users/{userId}") // users/{userId} will be removed for jwt/session
+    @PatchMapping("/{reimbId}/users/{userId}") // users/{userId} will be removed for jwt/session
+    public ResponseEntity<Reimbursement> updateReimbursementStatus(
+            @PathVariable int reimbId,
+            @PathVariable int userId,
+            @RequestBody IncomingReimbursementDTO reimbursementDTO) {
+        reimbursementDTO.setUserId(userId);
+        return ResponseEntity.ok(reimbursementService.updateReimbursementStatus(reimbId, reimbursementDTO));
+    }
+
 }
