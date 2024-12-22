@@ -1,5 +1,7 @@
 package app.ers.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import app.ers.model.DTO.IncomingReimbursementDTO;
@@ -48,6 +50,33 @@ public class ReimbursementService {
             } else throw new RepositoryException("Invalid user");
         } else throw new InvalidRegistrationException("Invalid Reimbursement details");
     }
+
+    public List<Reimbursement> getAllReimbursementsByUser(int userId) {
+        // 1. ensure id exists
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            // 2. determine employee || manager - employee -> findAllByUserId || manager -> findAll()
+            if (user.get().getRole().equalsIgnoreCase("employee")) {
+                List<Reimbursement> reimbursements =
+                        reimbursementRepository.findAllByUser_UserId(user.get().getUserId());
+
+                for (Reimbursement reimbursement : reimbursements) {
+                    reimbursement.setUser(null);
+                } // for each reimbursement remove user's details
+                return reimbursements;
+            } // if : employee
+            else {
+                List<Reimbursement> reimbursements = reimbursementRepository.findAll();
+                for (Reimbursement reimbursement : reimbursements) {
+                    reimbursement.getUser().setUsername(null);
+                    reimbursement.getUser().setPassword(null);
+                } // for each reimbursement remove user's username & password
+                return reimbursementRepository.findAll();
+            } // else : manager
+        } else throw new RepositoryException("invalid account details");
+        //return null;
+    }
+
 
     private boolean validFields(Reimbursement reimbursement) {
         return !(reimbursement.getDescription().isBlank() || reimbursement.getAmount() == 0

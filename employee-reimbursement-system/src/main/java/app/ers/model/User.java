@@ -2,6 +2,8 @@ package app.ers.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity // annotation makes a DB table based on class
 @Table(name="User") // annotation lets us specify table properties (like table name)
 @Component // 1/4 stereotypes - makes class a Bean
+@JsonInclude(Include.NON_EMPTY) // excludes fields that are null || empty
 public class User {
 
     @Id // annotation makes field a primary key

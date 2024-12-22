@@ -6,12 +6,10 @@ import app.ers.model.Reimbursement;
 
 import app.ers.service.ReimbursementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/reimbursements")
@@ -26,7 +24,18 @@ public class ReimbursementController {
     } // constructor injection
 
     @PostMapping
-    public ResponseEntity<OutgoingReimbursementDTO> createReimbursement(@RequestBody IncomingReimbursementDTO reimbursementDTO) {
+    public ResponseEntity<OutgoingReimbursementDTO> createReimbursement(
+            @RequestBody IncomingReimbursementDTO reimbursementDTO) {
         return ResponseEntity.ok(reimbursementService.createReimbursement(reimbursementDTO));
+    }
+
+    /**
+     * Get list of all {@code Reimbursement} records for given {@code userId}.
+     * @param userId
+     * @return a {@code List<Reimbursement>} of all reimbursements for given {@code userId}
+     */
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Reimbursement>> getAllReimbursementsByUser(@PathVariable int userId) {
+        return ResponseEntity.ok().body(reimbursementService.getAllReimbursementsByUser(userId));
     }
 }

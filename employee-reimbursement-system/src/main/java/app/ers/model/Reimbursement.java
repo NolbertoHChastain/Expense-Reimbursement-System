@@ -1,5 +1,7 @@
 package app.ers.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Entity // makes DB table based on Class
 @Component // 1/4 stereotypes - makes class a Bean
 @Table(name = "Reimbursement") // specifies DB table name
+@JsonInclude(Include.NON_EMPTY)
 public class Reimbursement {
 
     @Id // declares field as primary key
