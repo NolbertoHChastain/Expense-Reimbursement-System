@@ -10,4 +10,11 @@ import org.springframework.stereotype.Repository;
 public interface ReimbursementRepository extends JpaRepository<Reimbursement, Integer> {
 
     public List<Reimbursement> findAllByUser_UserId(int userId);
+
+    //public List<Reimbursement> findAllByUser_UserIdAndStatusIgnoreCase(int userId, String status);
+    public List<Reimbursement> findAllByUser_UserIdAndStatus(int userId, String status);
+
+    //public List<Reimbursement> findAllByStatusIgnoreCase(String status);
+    public List<Reimbursement> findAllByStatus(String status);
+
 }

@@ -34,8 +34,17 @@ public class ReimbursementController {
      * @param userId
      * @return a {@code List<Reimbursement>} of all reimbursements for given {@code userId}
      */
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}") // add 'users'/{userId}
     public ResponseEntity<List<Reimbursement>> getAllReimbursementsByUser(@PathVariable int userId) {
         return ResponseEntity.ok().body(reimbursementService.getAllReimbursementsByUser(userId));
-    }
+    } // jwt/session: will have userId - remove later
+
+    @GetMapping("/{status}/{userId}") // add 'users'/{userId}
+    public ResponseEntity<List<Reimbursement>> getAllReimbursementsByStatus(
+            @PathVariable String status,
+            @PathVariable int userId) {
+        return ResponseEntity.ok().body(reimbursementService.getAllReimbursementsByStatus(status, userId));
+    } // jwt/session : will have userId - remove later
+
+    //@PatchMapping("/{reimbId}/users/{userId}") // users/{userId} will be removed for jwt/session
 }
