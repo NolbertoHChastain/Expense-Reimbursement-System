@@ -13,6 +13,8 @@ import app.ers.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
+
 @Service
 public class UserService {
 
@@ -49,7 +51,8 @@ public class UserService {
                 List<User> users = userRepository.findAll();
 
                 for (User existingUser : users) {
-                    existingUser.setUsername(null);
+                    existingUser.setFirstname(null);
+                    existingUser.setLastname(null);
                     existingUser.setPassword(null);
                 } // for each : existing user nullify username & password
                 return users;
@@ -71,6 +74,17 @@ public class UserService {
                 } else return 0;
             } throw new UnauthorizedException("not authorized to perform this action");
         } throw new RepositoryException("invalid manager details");
+    }
+
+    public User login(User user) {
+        // 1. verify username and password exist
+        Optional<User> existingUser = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+        if (existingUser.isPresent()) {
+            // 2. verify matching password
+            if (existingUser.get().getPassword().equals(user.getPassword())) {
+                return existingUser.get();
+            } else throw new InvalidRegistrationException("invalid credentials");
+        } else throw new RepositoryException("invalid user details");
     }
 
     private boolean validFields(User user) {

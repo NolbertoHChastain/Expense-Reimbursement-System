@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(value = "https://hoppscotch.io")
+@CrossOrigin(value = "http://localhost:5173")
 public class UserController {
 
     private final UserService userService;
@@ -34,6 +34,12 @@ public class UserController {
     @DeleteMapping("/{userId}/managers/{managerId}") // remove 'managers/userid' soon
     public ResponseEntity<Integer> deleteUser(@PathVariable int userId, @PathVariable int managerId) {
         return ResponseEntity.ok(userService.deleteUserById(userId, managerId));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody User user) {
+        System.out.println(user);
+        return ResponseEntity.ok(userService.login(user));
     }
 
 }

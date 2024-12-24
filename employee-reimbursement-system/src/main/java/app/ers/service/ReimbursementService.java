@@ -15,6 +15,7 @@ import app.ers.repository.ReimbursementRepository;
 import app.ers.util.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReimbursementService {
@@ -129,6 +130,22 @@ public class ReimbursementService {
             existingReimbursement.setDescription(reimbursementDTO.getDescription());
         } // else if : description available
         return existingReimbursement;
+    }
+
+    public int deleteReimbursementByUser(int reimbId, int userId) {
+        // 1. ensure manager exist
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Reimbursement> reimbursement = reimbursementRepository.findById(reimbId);
+        if (user.isPresent()) {
+            // 2. check user is not already deleted
+            if (reimbursement.isPresent()) {
+                /*Reimbursement existing = reimbursement.get();
+                e
+                System.out.println(existing.toString());*/
+                reimbursementRepository.deleteById(reimbId);
+                return 1;
+            } else return 0;
+        } throw new RepositoryException("invalid user details");
     }
 
     private boolean validFields(Reimbursement reimbursement) {

@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
 @RequestMapping("/reimbursements")
-@CrossOrigin(value = "https://hoppscotch.io")
+@CrossOrigin(value = "http://localhost:5173")
 public class ReimbursementController {
 
     private final ReimbursementService reimbursementService;
@@ -53,6 +54,11 @@ public class ReimbursementController {
             @RequestBody IncomingReimbursementDTO reimbursementDTO) {
         reimbursementDTO.setUserId(userId);
         return ResponseEntity.ok(reimbursementService.updateReimbursementStatus(reimbId, reimbursementDTO));
+    }
+
+    @DeleteMapping("/{reimbId}/users/{userId}")
+    public ResponseEntity<Integer> deleteReimbursementByUser(@PathVariable int reimbId, @PathVariable int userId) {
+        return ResponseEntity.ok(reimbursementService.deleteReimbursementByUser(reimbId, userId));
     }
 
 }
